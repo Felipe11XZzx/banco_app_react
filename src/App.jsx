@@ -1,13 +1,13 @@
-import { useState, useEffect } from 'react';
-import './App.css';
-import accounts from './accounts';
+import { useState, useEffect } from "react";
+import "./App.css";
+import accounts from "./accounts";
 
 // Import components
-import Welcome from './Welcome/Welcome';
-import Balance from './Balance/Balance';
-import Movements from './Movements/Movements';
-import Summary from './Summary/Summary';
-import Operations from './Operations/Operations';
+import Welcome from "./Welcome/Welcome";
+import Balance from "./Balance/Balance";
+import Movements from "./Movements/Movements";
+import Summary from "./Summary/Summary";
+import Operations from "./Operations/Operations";
 
 function App() {
   const [currentAccount, setCurrentAccount] = useState(null);
@@ -15,29 +15,74 @@ function App() {
   const [balance, setBalance] = useState(0);
   const [summaryIn, setSummaryIn] = useState(0);
   const [summaryOut, setSummaryOut] = useState(0);
+  const [allAccounts, setAllAccounts] = useState(accounts);
 
   // Create usernames for all accounts
   useEffect(() => {
-    accounts.forEach(account => {
-      account.username = account.owner
+    const updatedAccounts = allAccounts.map(account => ({
+      ...account,
+      username: account.owner
         .toLowerCase()
-        .split(' ')
-        .map(name => name[0])
-        .join('');
-    });
+        .split(" ")
+        .map((name) => name[0])
+        .join("")
+    }));
+    setAllAccounts(updatedAccounts);
   }, []);
 
   const handleLogin = (username, pin) => {
-    const account = accounts.find(
-      account => account.username === username
-    );
+    const account = allAccounts.find((account) => account.username === username);
 
     if (account && account.pin === Number(pin)) {
       setCurrentAccount(account);
       updateUI(account);
     } else {
-      console.log('login incorrecto');
+      alert("Incorrect username or PIN");
     }
+  };
+
+  const handleTransfer = (receiverAccount, amount) => {
+    // Find current account in allAccounts to ensure we're working with latest state
+    const updatedAccounts = [...allAccounts];
+    const senderIndex = updatedAccounts.findIndex(acc => acc.username === currentAccount.username);
+    const receiverIndex = updatedAccounts.findIndex(acc => acc.username === receiverAccount.username);
+
+    if (senderIndex !== -1 && receiverIndex !== -1) {
+      // Add negative movement to current account
+      updatedAccounts[senderIndex].movements.push(-amount);
+      // Add positive movement to receiver account
+      updatedAccounts[receiverIndex].movements.push(amount);
+      
+      // Update all states
+      setAllAccounts(updatedAccounts);
+      setCurrentAccount(updatedAccounts[senderIndex]);
+      updateUI(updatedAccounts[senderIndex]);
+    }
+  };
+
+  const handleLoan = (amount) => {
+    const updatedAccounts = [...allAccounts];
+    const accountIndex = updatedAccounts.findIndex(acc => acc.username === currentAccount.username);
+
+    if (accountIndex !== -1) {
+      // Add positive movement to current account
+      updatedAccounts[accountIndex].movements.push(amount);
+      
+      // Update states
+      setAllAccounts(updatedAccounts);
+      setCurrentAccount(updatedAccounts[accountIndex]);
+      updateUI(updatedAccounts[accountIndex]);
+    }
+  };
+
+  const handleClose = () => {
+    const updatedAccounts = allAccounts.filter(acc => acc.username !== currentAccount.username);
+    setAllAccounts(updatedAccounts);
+    setCurrentAccount(null);
+    setMovements([]);
+    setBalance(0);
+    setSummaryIn(0);
+    setSummaryOut(0);
   };
 
   const updateUI = (account) => {
@@ -53,13 +98,13 @@ function App() {
 
   const displaySummary = (movements) => {
     const sumIn = movements
-      .filter(movement => movement > 0)
+      .filter((movement) => movement > 0)
       .reduce((total, movement) => total + movement, 0);
     setSummaryIn(sumIn);
 
-    const sumOut = movements
-      .filter(movement => movement < 0)
-      .reduce((total, movement) => total + movement, 0);
+    const sumOut = Math.abs(movements
+      .filter((movement) => movement < 0)
+      .reduce((total, movement) => total + movement, 0));
     setSummaryOut(sumOut);
   };
 
@@ -71,7 +116,13 @@ function App() {
         <Balance balance={balance} />
         <Movements movements={movements} />
         <Summary summaryIn={summaryIn} summaryOut={summaryOut} />
-        <Operations />
+        <Operations 
+          currentAccount={currentAccount}
+          accounts={allAccounts}
+          onTransfer={handleTransfer}
+          onLoan={handleLoan}
+          onClose={handleClose}
+        />
 
         {/* LOGOUT TIMER */}
         <p className="logout-timer">
