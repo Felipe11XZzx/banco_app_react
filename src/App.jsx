@@ -19,19 +19,21 @@ function App() {
 
   // Create usernames for all accounts
   useEffect(() => {
-    const updatedAccounts = allAccounts.map(account => ({
+    const updatedAccounts = allAccounts.map((account) => ({
       ...account,
       username: account.owner
         .toLowerCase()
         .split(" ")
         .map((name) => name[0])
-        .join("")
+        .join(""),
     }));
     setAllAccounts(updatedAccounts);
   }, []);
 
   const handleLogin = (username, pin) => {
-    const account = allAccounts.find((account) => account.username === username);
+    const account = allAccounts.find(
+      (account) => account.username === username
+    );
 
     if (account && account.pin === Number(pin)) {
       setCurrentAccount(account);
@@ -44,15 +46,19 @@ function App() {
   const handleTransfer = (receiverAccount, amount) => {
     // Find current account in allAccounts to ensure we're working with latest state
     const updatedAccounts = [...allAccounts];
-    const senderIndex = updatedAccounts.findIndex(acc => acc.username === currentAccount.username);
-    const receiverIndex = updatedAccounts.findIndex(acc => acc.username === receiverAccount.username);
+    const senderIndex = updatedAccounts.findIndex(
+      (acc) => acc.username === currentAccount.username
+    );
+    const receiverIndex = updatedAccounts.findIndex(
+      (acc) => acc.username === receiverAccount.username
+    );
 
     if (senderIndex !== -1 && receiverIndex !== -1) {
       // Add negative movement to current account
       updatedAccounts[senderIndex].movements.push(-amount);
       // Add positive movement to receiver account
       updatedAccounts[receiverIndex].movements.push(amount);
-      
+
       // Update all states
       setAllAccounts(updatedAccounts);
       setCurrentAccount(updatedAccounts[senderIndex]);
@@ -62,12 +68,14 @@ function App() {
 
   const handleLoan = (amount) => {
     const updatedAccounts = [...allAccounts];
-    const accountIndex = updatedAccounts.findIndex(acc => acc.username === currentAccount.username);
+    const accountIndex = updatedAccounts.findIndex(
+      (acc) => acc.username === currentAccount.username
+    );
 
     if (accountIndex !== -1) {
       // Add positive movement to current account
       updatedAccounts[accountIndex].movements.push(amount);
-      
+
       // Update states
       setAllAccounts(updatedAccounts);
       setCurrentAccount(updatedAccounts[accountIndex]);
@@ -76,7 +84,9 @@ function App() {
   };
 
   const handleClose = () => {
-    const updatedAccounts = allAccounts.filter(acc => acc.username !== currentAccount.username);
+    const updatedAccounts = allAccounts.filter(
+      (acc) => acc.username !== currentAccount.username
+    );
     setAllAccounts(updatedAccounts);
     setCurrentAccount(null);
     setMovements([]);
@@ -102,21 +112,22 @@ function App() {
       .reduce((total, movement) => total + movement, 0);
     setSummaryIn(sumIn);
 
-    const sumOut = Math.abs(movements
-      .filter((movement) => movement < 0)
-      .reduce((total, movement) => total + movement, 0));
+    const sumOut = Math.abs(
+      movements
+        .filter((movement) => movement < 0)
+        .reduce((total, movement) => total + movement, 0)
+    );
     setSummaryOut(sumOut);
   };
 
   return (
     <>
       <Welcome onLogin={handleLogin} currentAccount={currentAccount} />
-
       <main className="app" style={{ opacity: currentAccount ? 1 : 0 }}>
         <Balance balance={balance} />
         <Movements movements={movements} />
         <Summary summaryIn={summaryIn} summaryOut={summaryOut} />
-        <Operations 
+        <Operations
           currentAccount={currentAccount}
           accounts={allAccounts}
           onTransfer={handleTransfer}
