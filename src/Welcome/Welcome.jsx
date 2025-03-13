@@ -7,7 +7,7 @@ const Welcome = ({ onLogin, currentAccount }) => {
       <p className="welcome">
         {currentAccount ? `Bienvenido/a, ${currentAccount.owner.split(' ')[0]}` : 'Inicia sesión para comenzar'}
       </p>
-      <img src="/logo.png" alt="Logo" className="logo" />
+      <img src="logo.png" alt="Logo" className="logo" />
       {!currentAccount && <Login onLogin={onLogin} />}
     </nav>
   );
