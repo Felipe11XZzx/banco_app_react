@@ -14,7 +14,7 @@ const Operations = ({ currentAccount, accounts, onTransfer, onLoan, onClose }) =
     const receiverAccount = accounts.find(acc => acc.username === transferTo);
     
     // Calculate current balance
-    const currentBalance = currentAccount.movements.reduce((acc, mov) => acc + mov, 0);
+    const currentBalance = currentAccount.movements.reduce((acc, mov) => acc + mov.amount, 0);
 
     if (amount > 0 && 
         receiverAccount && 
@@ -26,13 +26,13 @@ const Operations = ({ currentAccount, accounts, onTransfer, onLoan, onClose }) =
     } else {
       // Add error feedback
       if (!receiverAccount) {
-        alert('Recipient not found!');
+        alert('¡Destinatario no encontrado!');
       } else if (amount <= 0) {
-        alert('Please enter a valid amount!');
+        alert('¡Por favor ingrese un monto válido!');
       } else if (currentBalance < amount) {
-        alert('Insufficient funds!');
+        alert('¡Fondos insuficientes!');
       } else if (receiverAccount?.username === currentAccount.username) {
-        alert('Cannot transfer to same account!');
+        alert('¡No se puede transferir a la misma cuenta!');
       }
     }
   };
@@ -41,11 +41,11 @@ const Operations = ({ currentAccount, accounts, onTransfer, onLoan, onClose }) =
     e.preventDefault();
     const amount = Number(loanAmount);
 
-    if (amount > 0 && currentAccount.movements.some(mov => mov >= amount * 0.1)) {
+    if (amount > 0) {
       onLoan(amount);
       setLoanAmount('');
     } else {
-      alert('Loan request denied. You need at least one deposit of 10% of the requested amount.');
+      alert('Por favor ingrese un monto válido para el préstamo.');
     }
   };
 
@@ -58,7 +58,7 @@ const Operations = ({ currentAccount, accounts, onTransfer, onLoan, onClose }) =
       setCloseUser('');
       setClosePin('');
     } else {
-      alert('Invalid credentials!');
+      alert('¡Credenciales inválidas!');
     }
   };
 
@@ -66,54 +66,54 @@ const Operations = ({ currentAccount, accounts, onTransfer, onLoan, onClose }) =
     <>
       {/* OPERATION: TRANSFERS */}
       <div className="operation operation--transfer">
-        <h2>Transfer money</h2>
+        <h2>Transferir dinero</h2>
         <form className="form form--transfer" onSubmit={handleTransfer}>
           <input
             type="text"
             className="form__input form__input--to"
             value={transferTo}
             onChange={(e) => setTransferTo(e.target.value)}
-            placeholder="Username"
+            placeholder="Usuario"
           />
           <input
             type="number"
             className="form__input form__input--amount"
             value={transferAmount}
             onChange={(e) => setTransferAmount(e.target.value)}
-            placeholder="Amount"
+            placeholder="Monto"
           />
           <button className="form__btn form__btn--transfer">→</button>
-          <label className="form__label">Transfer to</label>
-          <label className="form__label">Amount</label>
+          <label className="form__label">Transferir a</label>
+          <label className="form__label">Monto</label>
         </form>
       </div>
 
       {/* OPERATION: LOAN */}
       <div className="operation operation--loan">
-        <h2>Request loan</h2>
+        <h2>Solicitar préstamo</h2>
         <form className="form form--loan" onSubmit={handleLoan}>
           <input
             type="number"
             className="form__input form__input--loan-amount"
             value={loanAmount}
             onChange={(e) => setLoanAmount(e.target.value)}
-            placeholder="Amount"
+            placeholder="Monto"
           />
           <button className="form__btn form__btn--loan">→</button>
-          <label className="form__label form__label--loan">Amount</label>
+          <label className="form__label form__label--loan">Monto</label>
         </form>
       </div>
 
       {/* OPERATION: CLOSE */}
       <div className="operation operation--close">
-        <h2>Close account</h2>
+        <h2>Cerrar cuenta</h2>
         <form className="form form--close" onSubmit={handleClose}>
           <input
             type="text"
             className="form__input form__input--user"
             value={closeUser}
             onChange={(e) => setCloseUser(e.target.value)}
-            placeholder="Username"
+            placeholder="Usuario"
           />
           <input
             type="password"
@@ -124,8 +124,8 @@ const Operations = ({ currentAccount, accounts, onTransfer, onLoan, onClose }) =
             placeholder="PIN"
           />
           <button className="form__btn form__btn--close">→</button>
-          <label className="form__label">Confirm user</label>
-          <label className="form__label">Confirm PIN</label>
+          <label className="form__label">Confirmar usuario</label>
+          <label className="form__label">Confirmar PIN</label>
         </form>
       </div>
     </>

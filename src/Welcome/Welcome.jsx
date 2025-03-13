@@ -5,12 +5,10 @@ const Welcome = ({ onLogin, currentAccount }) => {
   return (
     <nav>
       <p className="welcome">
-        {currentAccount 
-          ? `Welcome back, ${currentAccount.owner.split(' ')[0]}`
-          : 'Log in to get started'}
+        {currentAccount ? `Bienvenido/a, ${currentAccount.owner.split(' ')[0]}` : 'Inicia sesión para comenzar'}
       </p>
-      <img src="logo.png" alt="Logo" className="logo" />
-      <Login onLogin={onLogin} />
+      <img src="/logo.png" alt="Logo" className="logo" />
+      {!currentAccount && <Login onLogin={onLogin} />}
     </nav>
   );
 };

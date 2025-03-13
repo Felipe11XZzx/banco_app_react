@@ -1,0 +1,15 @@
+1. Se realizan al menos 5 commits del proyecto bien documentados	
+
+2. Implementa la funcionalidad "Close Account" que cierra la cuenta del usuario. El usuario ya no podrá acceder a la cuenta, que desaparece de las cuentas disponibles.	
+
+3. Se realizan transferencias de dinero de forma satisfactoria. Se controla que las cuentas existan y que sean válidas. Se controla que haya suficiente dinero en la cuenta origen. Se controla que las transferencias sean positivas.	
+
+4. Se solicita un prestamo y se actualizan los datos en la pantalla. Para requerir un prestamo se debe comprobar que las cantidades solicitadas sean positivas y no superiores al 200% del balance de la cuenta.	
+
+5. Implementa los movimientos como objetos que llevan además del importe la fecha	
+
+6. Generar datos aleatorios vía https://fakerjs.dev/ o mediante una función propia.	
+
+7. Mostrar fechas con texto del tipo "hace 2 días" mediante la librería moment.js o similar.	
+
+8. Poder ordenar el listado de movimientos en función de la fecha.

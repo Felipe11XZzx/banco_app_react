@@ -1,6 +1,6 @@
 import './Summary.css';
 
-const Summary = ({ summaryIn, summaryOut }) => {
+const Summary = ({ summaryIn, summaryOut, onSort, sorted }) => {
   return (
     <div className="summary">
       <p className="summary__label">In</p>
@@ -13,7 +13,9 @@ const Summary = ({ summaryIn, summaryOut }) => {
       </p>
       <p className="summary__label">Interest</p>
       <p className="summary__value summary__value--interest">0.00€</p>
-      <button className="btn--sort">↓ SORT</button>
+      <button className="btn--sort" onClick={onSort}>
+        {sorted ? '↑' : '↓'} ORDENAR
+      </button>
     </div>
   );
 };
